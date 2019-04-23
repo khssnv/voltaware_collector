@@ -2,6 +2,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from json import loads
 
 from . import app
 
@@ -59,3 +60,13 @@ def total_consumption():
     offset = sum([x.consumption for x in Offset.query.all()])
     consumption = sum([x.consumption for x in Sensor.query.all()])
     return str(consumption - offset)
+
+@app.route('/eth_address')
+def eth_address():
+    '''
+        Returns DAOS Ethereum address.
+    '''
+    with open('/var/lib/liability/keyfile', 'r') as keyfile:
+        key = loads(keyfile.readline())
+        addr = '0x' + key['address']
+    return addr
